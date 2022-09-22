@@ -1,0 +1,41 @@
+/// <reference types= "cypress" />
+
+describe('Login', () => {
+    beforeEach(() => {
+        cy.visit('https://katalon-demo-cura.herokuapp.com/')
+    })
+
+    it('Login with valid data', () => {
+        cy.get('#menu-toggle').click()
+        cy.contains('Login').click()
+        cy.url().should('include', 'profile.php#login')
+        cy.get('h2').should('be.visible').and('contain', 'Login')
+        cy.get('.lead').should('be.visible').and('contain', 'Please login to make appointment.')
+        cy.get('.col-sm-offset-3').should('be.visible')
+        cy.get('#txt-username').invoke('attr', 'placeholder').should('contain', 'Username')
+        cy.get('#txt-username').type('John Doe')
+            .should('have.value', 'John Doe')
+        cy.get('#txt-password').invoke('attr', 'placeholder').should('contain', 'Password')
+        cy.get('#txt-password').type('ThisIsNotAPassword')
+            .should('have.value', 'ThisIsNotAPassword')
+        cy.get('#btn-login').click()
+        cy.url().should('include', '#appointment')
+        cy.get('.form-horizontal').should('be.visible')
+    })
+    it('Login with invalid username and valid password', () => {
+        cy.get('#menu-toggle').click()
+        cy.contains('Login').click()
+        cy.url().should('include', 'profile.php#login')
+        cy.get('h2').should('be.visible').and('contain', 'Login')
+        cy.get('.lead').should('be.visible').and('contain', 'Please login to make appointment.')
+        cy.get('.col-sm-offset-3').should('be.visible')
+        cy.get('#txt-username').invoke('attr', 'placeholder').should('contain', 'Username')
+        cy.get('#txt-username').type('JohnDoe')
+            .should('have.value', 'JohnDoe')
+        cy.get('#txt-password').invoke('attr', 'placeholder').should('contain', 'Password')
+        cy.get('#txt-password').type('ThisIsNotAPassword')
+            .should('have.value', 'ThisIsNotAPassword')
+        cy.get('#btn-login').click()
+        cy.get('.text-danger').should('be.visible').and('contain.text', 'Login failed! Please ensure the username and password are valid.')
+    })
+})
